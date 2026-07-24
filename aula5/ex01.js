@@ -33,25 +33,27 @@ app.get ('/p', (req , res) => {
  res.json(p)
  })
 
+//ex3 
+app.get('/status', (req, res) => {
+  res.status(200).json({
+    online: true,
+    message: "Deu tudo certo!!"
+  })
+})
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+//ex4
+app.get('/produtos/carros', (req, res) =>{
+const produtos = [
+{ id: 1, nome: 'Desengraxante e Removedor de Sujeira Pesada V-Mol Vonixx', preco: 290.20 },
+{ id: 1, nome: 'Cera em Pasta Tradicional com Carnaúba Proauto', preco: 37.48 },
+{ id: 1, nome: 'Repelente de Chuva Glaco Soft99', preco: 134.10 },
+{ id: 1, nome: 'Limpador de Vidros de Alta Performance Glass Cleaner Proauto', preco: 12.35 },
+{ id: 1, nome: 'Limpador e Hidratante de Couro Higicouro Vonixx', preco: 22.90 }
+];
+ const prodcar = produtos.filter(produto => produto.preco > 100)
+res.json(prodcar)
+})
 
 app.listen(3000, () => {
-console.log(" Servidor rodando em http://localhost:3000");
-});
+console.log(" Servidor rodando em http :// localhost :3000 ");
+}); 
