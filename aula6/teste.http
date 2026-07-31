@@ -1,0 +1,15 @@
+### testar get produtos
+GET http://localhost:3000/todos
+
+### Criar um novo produto
+POST http://localhost:3000/
+Content-Type: application/json
+
+{
+    "nome": "Produto Teste",
+    "preco": 100.00
+}
+
+
+### listar especifica
+GET http://localhost:3000/esp/
