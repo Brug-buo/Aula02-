@@ -53,7 +53,6 @@ const novoProduto = {
 
 // PUT /atualiza/:id -> atualiza um produto existente
 app.put ('/atualiza/:id', (req, res) => {
-  console.log("ola");
   const id = Number (req.params.id);
   const produto = prodcor.find (a => a.id === id);
   if (!produto){
