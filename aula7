@@ -1,1 +1,199 @@
+const express = require('express');
+const app = express();
+app.use(express.json());
 
+let prodcor = [
+  { id: 1, nome: "verde", preco: 1.00 },
+  { id: 2, nome: "amarelo", preco: 2.00 },
+  { id: 3, nome: "vermelho", preco: 1.50 }
+];
+
+let proxid = 4;
+
+
+
+
+
+// GET / -> retorna todos os produtos
+app.get('/produtos', (req, res) => {
+  res.json(prodcor);
+});
+
+
+
+
+
+// GET atualizado - /produtos/:id -> retorna um produto específico
+app.get('/produtos/:id', (req, res) => {
+  const id = Number(req.params.id);
+  const produto = prodcor.find(p => p.id === id);
+
+  if (!produto) {
+    return res.status(404).json({ erro: "Produto não encontrado" });
+  }
+  res.json(produto);
+});
+
+
+
+
+
+// POST atualizado - /produtos -> cria um novo produto
+app.post('/produtos', (req, res) => {
+  const { nome, preco } = req.body;
+  const erros = [];
+
+  if (!nome || typeof nome !== 'string' || nome.trim() === "") {
+    erros.push("O campo nome é obrigatório");
+  }
+
+  if (preco === undefined || isNaN(preco)) {
+    erros.push("O preço deve ser um número");
+  } else if (preco < 0 || preco > 10000000000.00) {
+    erros.push("Preço inválido (deve ser entre 0 e 10000000000.00)");
+  }
+
+  if (erros.length > 0) {
+    return res.status(400).json({ erros });
+  }
+
+  const novoProduto = { id: proxid, nome, preco };
+  prodcor.push(novoProduto);
+  proxid++;
+
+  res.status(201).json(novoProduto);
+});
+
+
+
+
+
+
+// PUT atualizado - /produtos/:id -> atualiza um produto existente
+app.put('/produtos/:id', (req, res) => {
+  const id = Number(req.params.id);
+  const produto = prodcor.find(p => p.id === id);
+
+  if (!produto) {
+    return res.status(404).json({ erro: "Produto não encontrado" });
+  }
+  const { nome, preco } = req.body;
+  const erros = [];
+  if (!nome || typeof nome !== 'string' || nome.trim() === "") {
+    erros.push("O campo nome é obrigatório");
+  }
+  if (preco === undefined || isNaN(preco)) {
+    erros.push("O preço deve ser um número");
+  } else if (preco < 0 || preco > 10000000000.00) {
+    erros.push("Preço inválido (deve ser entre 0 e 10000000000.00)");
+  }
+  if (erros.length > 0) {
+    return res.status(400).json({ erros });
+  }
+  produto.nome = nome;
+  produto.preco = preco;
+  res.json(produto);
+});
+
+
+
+
+
+
+// DELETE atualizado - /produtos/:id -> remove produto
+app.delete('/produtos/:id', (req, res) => {
+  const id = Number(req.params.id);
+  const produto = prodcor.find(p => p.id === id);
+
+  if (!produto) {
+    return res.status(404).json({ erro: "Produto não encontrado" });
+  }
+  prodcor = prodcor.filter(p => p.id !== id);
+  res.json({ mensagem: "Produto removido com sucesso" });
+});
+
+
+
+
+
+app.listen(3000, () => {
+  console.log("Servidor rodando em http://localhost:3000");
+});
+
+
+
+
+
+TEST.HTTP
+### Teste 1 - POST sem nome (espera 400)
+POST http://localhost:3000/preco
+Content -Type: application/json
+
+{ 
+    "preco":8.12
+}
+
+
+### Teste 2 - POST sem nota (espera 400)
+POST http://localhost:3000/nome
+Content -Type: application/json
+
+{ 
+    "nome": "Rosa" 
+}
+
+
+### Teste 3 - POST com nota invalida (espera 400)
+POST http://localhost:3000//
+Content -Type: application/json
+
+{ 
+    "nome": "Cinza", 
+    "preco": 12.03
+}
+
+
+### Teste 4 - POST correto (espera 201) 
+POST http://localhost:3000/produtos
+Content-Type: application/json
+
+{ 
+  "nome": "Rosa",
+  "preco": 8.12
+}
+
+### Teste 4 - GET buscar id inexistente (espera 404)
+GET http://localhost:3000/produtos/999
+
+
+### listar especifica
+GET http://localhost:3000/produto/1
+
+
+
+
+### Criar um novo produto
+POST http://localhost:3000/criar
+Content-Type: application/json
+
+{
+
+    "nome": "roxo",
+    "preco": 2.50
+}
+
+
+
+### Atualiza o produto 3
+PUT http://localhost:3000/atualiza/3
+Content-Type: application/json
+
+{
+    "nome": "laranja",
+    "preco": 3.50
+}
+
+
+
+### Deleta produto
+DELETE http://localhost:3000/retira/3
